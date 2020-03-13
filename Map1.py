@@ -27,6 +27,8 @@ for lt, ln, el in zip(lat, lon, elev) :
                                      color = 'grey',
                                      fill_opacity = 0.7))
 
+fg.add_child(folium.GeoJson(data = (open('world.json', 'r', encoding = 'utf-8-'))))
+
 map.add_child(fg)                 #Adds the feature group layer to the Map.
 
 map.save("Map1.html")           #Saves the Map
