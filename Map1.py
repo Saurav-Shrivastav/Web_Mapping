@@ -14,12 +14,12 @@ def color_producer(elevation):              #We produce the color of the marker 
     else :
         return 'red'
 
-map = folium.Map(location=[35.8543,-121.3712], zoom_start=6, tiles="Mapbox Bright")        #creates an object of the Map class and opens at the given location
+map = folium.Map(location=[35.8543,-121.3712], zoom_start=6)        #creates an object of the Map class and opens at the given location
 
-fg=folium.FeatureGroup(name="My Map")       #making a FeatureGroup class object which will be added as a child to the base Map.
+fgv = folium.FeatureGroup(name="Volcanoes")       #making a FeatureGroup class object which will be added as a child to the base Map.
 
 for lt, ln, el in zip(lat, lon, elev) :
-    fg.add_child(folium.CircleMarker(location=[lt, ln],             #The CircleMarker class of the folium library is used to mark the location of the volcanoes.
+    fgv.add_child(folium.CircleMarker(location=[lt, ln],             #The CircleMarker class of the folium library is used to mark the location of the volcanoes.
                                      popup=str(el) + " m",
                                      radius = 6,
                                      fill = True,           #it is false by default
@@ -27,7 +27,9 @@ for lt, ln, el in zip(lat, lon, elev) :
                                      color = 'grey',
                                      fill_opacity = 0.7))
 
-fg.add_child(folium.GeoJson(data = open('world.json', 'r', encoding = 'utf-8-sig').read(),
+fgp = folium.FeatureGroup(name = "Population")
+
+fgp.add_child(folium.GeoJson(data = open('world.json', 'r', encoding = 'utf-8-sig').read(),
                             style_function = lambda x: {'fillColor': 'yellow' if x['properties']['POP2005']<10000000
                             else 'orange' if 10000000 <= x['properties']['POP2005'] < 20000000
                             else 'red'}))
@@ -36,6 +38,8 @@ fg.add_child(folium.GeoJson(data = open('world.json', 'r', encoding = 'utf-8-sig
 # In this case we mark the borders of different countries by uusig the data in the Json file.
 #Adds a GeoJson polygon layer onto the Map.
 
-map.add_child(fg)                 #Adds the feature group layer to the Map.
+map.add_child(fgv)                 #Adds the feature group layer of the volcanoes to the base Map.
+map.add_child(fgp)                 #Adds the feature group layer of the Population to the base Map.
+map.add_child(folium.LayerControl())    #Through this we can control the differnet kayers to be displayed on the map in run time.
 
 map.save("Map1.html")           #Saves the Map
